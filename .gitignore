@@ -11,3 +11,5 @@ CTestTestfile.cmake
 /projektangabe.pdf
 
 .DS_Store
+
+.vscode
