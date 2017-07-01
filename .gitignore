@@ -9,3 +9,5 @@ compile_commands.json
 CTestTestfile.cmake
 /rfc2616.pdf
 /projektangabe.pdf
+
+.DS_Store
