@@ -16,7 +16,7 @@ int Server::run()
 {
     running = true;
 
-    cout << u8"💎  Server running…" << endl;
+    cout << u8"💎  graphene running on port " << port << u8"…" << endl;
 
     struct sockaddr_in server_addr;
     memset(&server_addr, 0, sizeof(struct sockaddr_in));

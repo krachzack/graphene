@@ -6,6 +6,7 @@ set(
   "source/main.cpp"
   "source/Server.cpp"
   "source/Request.cpp"
+  "source/Response.cpp"
 )
 
 include_directories(source)
