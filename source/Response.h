@@ -9,6 +9,13 @@ namespace graphene {
 
         Response() : status_code(-1), status_text(nullptr) {}
 
+        void set_ok(const std::string& content)
+        {
+            status_code = 200;
+            status_text = "OK";
+            this->content = content;
+        }
+
         void set_bad_request()
         {
             status_code = 400;
@@ -19,6 +26,7 @@ namespace graphene {
         void flush(int sock);
 
     private:
+        static const char* const http_endl;
         int status_code;
         const char* status_text;
         std::string content;

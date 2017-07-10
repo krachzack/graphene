@@ -5,6 +5,8 @@
 
 using namespace graphene;
 
+const char* const Response::http_endl = "\r\n";
+
 void Response::flush(int sock)
 {
     assert(status_code != -1);
@@ -12,11 +14,11 @@ void Response::flush(int sock)
 
     std::ostringstream header_stream;
 
-    header_stream << "HTTP/1.1 " << status_code << " " << status_text << "\n";
+    header_stream << "HTTP/1.1 " << status_code << " " << status_text << http_endl;
 
-    header_stream << "Server: graphen/1.0\n";
-    header_stream << "Content-Length: " << content.size() << "\n";
-    header_stream << "\n";
+    header_stream << "Server: graphen/1.0" << http_endl;
+    header_stream << "Content-Length: " << content.size() << http_endl;
+    header_stream << http_endl;
 
     std::string header = header_stream.str();
 

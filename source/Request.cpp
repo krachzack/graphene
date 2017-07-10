@@ -2,50 +2,127 @@
 #include "Response.h"
 
 #include <iostream>
+#include <fstream>
 #include <unistd.h>
 #include <cstring>
+#include <vector>
 #include <sstream>
+#include <string>
+#include <algorithm>
+#include <iterator>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <cassert>
 
 using namespace graphene;
+using namespace std;
 
-void Request::use(int new_sock) {
+const char* const Request::http_header_end = "\r\n\r\n";
+const char* const Request::http_endl = "\r\n";
+
+void Request::use(int new_sock)
+{
     in_use = true;
-    sock = new_sock;    
+    sock = new_sock;
+    verb.clear();
+    path.clear();
+    
+    struct timeval tv;
+    tv.tv_sec = 30;  /* 30 Secs Timeout */
+    tv.tv_usec = 0;
+    setsockopt(new_sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv,sizeof(struct timeval));
 }
 
-void Request::handle() {
-    std::cout << u8"Handling request…" << std::endl; 
+void Request::handle()
+{
+    string request_text;
 
-    ssize_t read_len = read(sock, (void*)buf_read, sizeof(buf_read));
+    ssize_t read_len;
+    bool header_received = false;
+    bool read_ok;
 
-    if(read_len > 0) {
-        std::string message(reinterpret_cast<const char*>(buf_read), read_len);
+    do {
+        read_len = read(sock, (void*)buf_read, sizeof(buf_read));
+        read_ok = read_len > 0;
 
-        std::cout << u8"Got message…" << message << std::endl; 
+        if(read_ok) {
+            string chunk(reinterpret_cast<const char*>(buf_read), read_len);
+            request_text += chunk;
+            header_received = request_text.find(http_header_end) != string::npos;
+        }
+    } while(read_ok && !header_received);
 
-        Response response;
+    Response response;
+    if(header_received && parse(request_text)) {
+        
+        if(verb == "GET") {
+            const size_t max_cwd_size = 8192;
+            char cwd_buf[max_cwd_size];
+
+            bool ok = getcwd(cwd_buf, max_cwd_size) != nullptr;
+            assert(ok);
+
+            string cwd(reinterpret_cast<const char*>(cwd_buf));
+
+            string abspath = cwd + path;
+
+            if(path == "/")
+            {
+                abspath += "index.html";
+            }
+
+            ifstream file(abspath);
+
+            if(file.good()) {
+                string file_contents((istreambuf_iterator<char>(file)),
+                                     istreambuf_iterator<char>());
+
+                response.set_ok(file_contents);
+            } else {
+                // Should be 404
+                response.set_bad_request();
+            }
+
+        } else {
+            response.set_bad_request();
+        }
+
+    } else {
         response.set_bad_request();
+    }
+
+    if(read_ok) {
         response.flush(sock);
     }
-    
 
-    std::cout << u8"Finished handling request…" << std::endl; 
     close(sock);
     in_use = false;
 }
 
-/*void Request::respond_bad_request() {
-    const char* status = "HTTP/1.1 400 Bad Request\n";
-    const char* content = "<html><body><h1>400 Bad Request</h1></body></html>";
+bool Request::parse(string& request_text)
+{
+    size_t first_endl_pos = request_text.find(http_endl);
+    if(first_endl_pos != string::npos)
+    {
+        string request_line = request_text.substr(0, first_endl_pos);
 
-    std::ostringstream header_stream;
+        vector<string> tokens;
+        istringstream request_line_stream(request_line);
+        copy(istream_iterator<string>(request_line_stream),
+             istream_iterator<string>(),
+             back_inserter(tokens));
 
-    header_stream << "Server: graphen/1.0\n";
-    header_stream << "Content-Length: " << strlen(content) << "\n";
-    header_stream << "\n";
-    std::string header_str = header_stream.str();
+        if(tokens.size() == 3 &&
+           (tokens[2] == "HTTP/1.1" || tokens[2] == "HTTP/1.0"))
+        {
+            verb = tokens[0];
+            path = tokens[1];
 
-    write(sock, status, strlen(status));
-    write(sock, header_str.c_str(), header_str.size());
-    write(sock, content, strlen(content));
-}*/
+            cout << "Got " << verb << " request for " << path << u8" …" << endl;
+
+            return true;
+        }
+    }
+
+    return false;
+}
