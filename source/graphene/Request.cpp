@@ -110,6 +110,10 @@ bool Request::parse(string& request_text)
            (tokens[2] == "HTTP/1.1" || tokens[2] == "HTTP/1.0"))
         {
             verb = tokens[0];
+
+            // TODO allow URIs instead of paths and translate them e.g.:
+            // GET http://www.w3.org/pub/WWW/TheProject.html HTTP/1.1
+            // this is required by the standard
             path = tokens[1];
 
             cout << "Got " << verb << " request for " << path << u8" …" << endl;
