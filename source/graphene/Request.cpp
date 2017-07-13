@@ -74,7 +74,7 @@ void Request::handle()
                 response.set_ok(file_contents);
             } else {
                 // Should be 404
-                response.set_bad_request();
+                response.set_not_found();
             }
 
         } else {

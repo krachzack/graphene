@@ -16,6 +16,13 @@ namespace graphene {
             this->content = content;
         }
 
+        void set_not_found()
+        {
+            status_code = 404;
+            status_text = "Not Found";
+            content = "<html><body><h1>404 Not Found</h1></body></html>";
+        }
+
         void set_bad_request()
         {
             status_code = 400;
