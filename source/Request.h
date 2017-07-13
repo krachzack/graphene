@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <sstream>
 #include <string>
+#include <atomic>
 
 namespace graphene {
     class Request {
@@ -14,14 +15,14 @@ namespace graphene {
 
         void handle();
 
-        bool is_in_use() { return in_use; }
+        bool is_in_use() { return in_use.load(); }
 
     private:
         static const char* const http_header_end;
         static const char* const http_endl;
         static const int BUF_SIZE = 4096;
 
-        volatile bool in_use;
+        std::atomic_bool in_use;
 
         int sock;
         std::string verb;
