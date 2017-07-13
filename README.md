@@ -6,6 +6,8 @@ Build the project with cmake and start the graphene executable.
 You can select a port with the `-p 8080` switch and a document root with the
 `-w ../some/../path` switch.
 
+Default port is 10000 and default webroot is `../webroot` relative to the current working directory.
+
 The server will now keep running until interrupted, e.g. by pressing `ctrl+c`.
 
     phil:graphene krachzack$ mkdir build && cd build && cmake .. && make
@@ -20,8 +22,6 @@ The server will now keep running until interrupted, e.g. by pressing `ctrl+c`.
     Got GET request for /test2.html …
     ^C💎  Server was requested to exit
     💎  Server exiting gracefully…
-    # If no root path is specified, uses ../webroot relative to working directory
-    ./graphene -w /web/server/root/path
 
 ## Features
 * Partial support for GET requests with status codes 200 and 404
