@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <cstring> // for memset
 #include <netdb.h>
 #include <netinet/in.h>
 #include <sys/types.h>
