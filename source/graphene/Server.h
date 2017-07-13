@@ -7,6 +7,7 @@
 #include <array>
 #include <string>
 #include <iostream>
+#include <atomic>
 
 namespace graphene {
     class Server {
@@ -23,7 +24,7 @@ namespace graphene {
         void abort();
 
     private:
-        volatile bool running;
+        std::atomic_bool running;
         int sock;
 
         std::array<Request, max_connections> request_pool;

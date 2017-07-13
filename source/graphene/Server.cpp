@@ -38,14 +38,14 @@ int Server::run()
     cout << u8"💎  graphene running on port " << config::port << u8"…" << endl;
     cout << u8"Web root: " << config::webroot << endl;
 
-    while(running)
+    while(running.load())
     {
         struct sockaddr_in client_addr;
         socklen_t client_addr_len;
         int new_sock = -1;
         
         new_sock = accept(sock, (struct sockaddr *)&client_addr, &client_addr_len);
-        if(running) {
+        if(running.load()) {
             if (new_sock < 0)
             {
                 cout << u8"🌋  Failed to accept socket, exiting…" << endl;
