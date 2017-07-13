@@ -3,8 +3,8 @@ Graphene is a lightweight web server implementing a small subset of the HTTP spe
 
 ## Building and usage
 Build the project with cmake and start the graphene executable.
-You can select a port with the `-p` switch and a document root with the
-`w` switch.
+You can select a port with the `-p 8080` switch and a document root with the
+`-w ../some/../path` switch.
 
 The server will now keep running until interrupted, e.g. by pressing `ctrl+c`.
 
