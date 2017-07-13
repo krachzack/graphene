@@ -16,14 +16,11 @@ int Server::run()
 {
     running = true;
 
-    cout << u8"💎  graphene running on port " << port << u8"…" << endl;
-    cout << u8"Web root: " << config::webroot << endl;
-
     struct sockaddr_in server_addr;
     memset(&server_addr, 0, sizeof(struct sockaddr_in));
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = INADDR_ANY;
-    server_addr.sin_port = htons(port);
+    server_addr.sin_port = htons(config::port);
 
     sock = socket(PF_INET, SOCK_STREAM, 0);
     int bind_err = bind(sock,
@@ -32,11 +29,14 @@ int Server::run()
 
     if (bind_err < 0)
     {
-        cout << u8"🌋  Failed to bind socket at port " << port << u8", exiting…" << endl;
+        cout << u8"🌋  Failed to bind socket at port " << config::port << u8", exiting…" << endl;
         return EXIT_FAILURE;
     }
     
     listen(sock, (int) max_connections);
+
+    cout << u8"💎  graphene running on port " << config::port << u8"…" << endl;
+    cout << u8"Web root: " << config::webroot << endl;
 
     while(running)
     {

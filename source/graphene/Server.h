@@ -11,8 +11,7 @@
 namespace graphene {
     class Server {
     public:
-        static const unsigned short port = 10001;
-        static const size_t max_connections = 10;
+        static const size_t max_connections = 128;
 
         Server() : running(false) {}
 
