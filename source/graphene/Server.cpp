@@ -1,8 +1,8 @@
-#include "Server.h"
+#include "graphene/config.h"
+#include "graphene/Server.h"
 
 #include <iostream>
 #include <cstdlib>
-
 #include <netdb.h>
 #include <netinet/in.h>
 #include <sys/types.h>
@@ -17,6 +17,7 @@ int Server::run()
     running = true;
 
     cout << u8"💎  graphene running on port " << port << u8"…" << endl;
+    cout << u8"Web root: " << config::webroot << endl;
 
     struct sockaddr_in server_addr;
     memset(&server_addr, 0, sizeof(struct sockaddr_in));

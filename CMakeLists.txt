@@ -4,9 +4,10 @@ project (graphene)
 set(
   IMPL_FILES
   "source/main.cpp"
-  "source/Server.cpp"
-  "source/Request.cpp"
-  "source/Response.cpp"
+  "source/graphene/config.cpp"
+  "source/graphene/Server.cpp"
+  "source/graphene/Request.cpp"
+  "source/graphene/Response.cpp"
 )
 
 include_directories(source)

@@ -1,5 +1,6 @@
-#include "Request.h"
-#include "Response.h"
+#include "graphene/config.h"
+#include "graphene/Request.h"
+#include "graphene/Response.h"
 
 #include <iostream>
 #include <fstream>
@@ -13,6 +14,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <cassert>
+#include <limits.h>
 
 using namespace graphene;
 using namespace std;
@@ -56,15 +58,7 @@ void Request::handle()
     if(header_received && parse(request_text)) {
         
         if(verb == "GET") {
-            const size_t max_cwd_size = 8192;
-            char cwd_buf[max_cwd_size];
-
-            bool ok = getcwd(cwd_buf, max_cwd_size) != nullptr;
-            assert(ok);
-
-            string cwd(reinterpret_cast<const char*>(cwd_buf));
-
-            string abspath = cwd + path;
+            string abspath = config::webroot + path;
 
             if(path == "/")
             {
