@@ -14,7 +14,7 @@ namespace graphene {
     public:
         static const size_t max_connections = 128;
 
-        Server() : running(false) {}
+        Server() : running(false), sock(-1) {}
 
         /**
         * Runs indefinetly, accepting requests
