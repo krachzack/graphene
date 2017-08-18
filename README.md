@@ -6,7 +6,9 @@ Build the project with cmake and start the graphene executable.
 You can select a port with the `-p 8080` switch and a document root with the
 `-w ../some/../path` switch.
 
-Default port is 10000 and default webroot is `../webroot` relative to the current working directory.
+Default port is 10000 and default webroot is `./webroot` relative to the current working directory.
+Graphene tries `../webroot` next, in case you run from the build directory, and if that also fails
+it just takes the current working directory as webroot.
 
 The server will now keep running until interrupted, e.g. by pressing `ctrl+c`.
 
